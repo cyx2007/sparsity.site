@@ -58,7 +58,7 @@ sudo docker compose version
 
 ## 3. 生成或下载发布包
 
-在开发机使用 `.nvmrc` 指定的 Node.js，以及 Docker Engine、Buildx。Docker 客户端和服务端需支持 API 1.49 或更高版本；打包使用[指定平台的镜像检查](https://docs.docker.com/reference/cli/docker/image/inspect/)与[镜像导出](https://docs.docker.com/reference/cli/docker/image/save/)。
+在开发机使用 `.nvmrc` 指定的 Node.js，以及 Docker Engine、Buildx。Docker 客户端和服务端需支持 API 1.49 或更高版本；打包使用[指定平台的镜像检查](https://docs.docker.com/reference/cli/docker/image/inspect/)与[镜像导出](https://docs.docker.com/reference/cli/docker/image/save/)。CI 固定安装 Docker 29.7.2，避免 runner 预装的旧版客户端缺少这些参数。
 
 ```sh
 # 审查当前源码后构建；默认平台为 linux/amd64。
