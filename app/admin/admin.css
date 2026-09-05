@@ -1,4 +1,9 @@
+html:has(.admin-shell),
+body:has(.admin-shell) {
+  background: #f3f5f1;
+}
 .admin-shell {
+  display: flow-root;
   min-height: 100vh;
   background: #f3f5f1;
 }
