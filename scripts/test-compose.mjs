@@ -13,10 +13,12 @@ import { join } from 'node:path';
 import { createServer } from 'node:net';
 import { once } from 'node:events';
 import { hashPassword } from '../server/auth.mjs';
+import { proxyImage } from './release-utils.mjs';
 
 const root = mkdtempSync(join(tmpdir(), 'sparsity-compose-'));
 chmodSync(root, 0o755);
 const image = process.env.SITE_TEST_IMAGE || 'sparsity:release';
+const caddy = process.env.SITE_TEST_PROXY_IMAGE || proxyImage();
 const project = `sparsity-check-${process.pid}`;
 const reserve = createServer();
 reserve.listen(0, '127.0.0.1');
@@ -26,14 +28,15 @@ await new Promise((resolve) => reserve.close(resolve));
 const origin = `http://localhost:${port}`;
 const password = 'isolated-compose-test-password';
 const runtimeFile = join(root, 'runtime.env');
+const deployDirectory = join(process.env.SITE_TEST_BUNDLE || '.', 'deploy');
 writeFileSync(
   runtimeFile,
   `SITE_ORIGIN=${origin}\nSITE_ACCESS=public\nADMIN_USERNAME=admin\nADMIN_PASSWORD_HASH=${await hashPassword(password)}\nSESSION_SECRET=${'a'.repeat(64)}\n`,
   { mode: 0o600 },
 );
 mkdirSync(join(root, 'data'));
-cpSync('deploy/compose.yaml', join(root, 'compose.yaml'));
-cpSync('deploy/Caddyfile', join(root, 'Caddyfile'));
+cpSync(join(deployDirectory, 'compose.yaml'), join(root, 'compose.yaml'));
+cpSync(join(deployDirectory, 'Caddyfile'), join(root, 'Caddyfile'));
 // Same proxy rules, isolated loopback port, local HTTP instead of real ACME.
 writeFileSync(
   join(root, 'test.yaml'),
@@ -49,6 +52,7 @@ const env = {
   SPARSITY_ROOT: root,
   SPARSITY_RELEASE: 'integration-test',
   SPARSITY_IMAGE: imageId,
+  SPARSITY_PROXY_IMAGE: caddy,
   SPARSITY_ENV_FILE: runtimeFile,
 };
 function compose(...args) {
@@ -70,6 +74,9 @@ function compose(...args) {
   );
 }
 try {
+  // Bundle verification supplies an already loaded image and must stay offline.
+  if (!process.env.SITE_TEST_PROXY_IMAGE)
+    execFileSync('docker', ['pull', caddy], { stdio: 'pipe' });
   execFileSync(
     'docker',
     [

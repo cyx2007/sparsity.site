@@ -33,6 +33,7 @@ WORKDIR /app
 COPY --from=runtime /app /app
 COPY --from=build /app/tests ./tests
 COPY --from=build /app/deploy ./deploy
+COPY --from=build /app/docs ./docs
 RUN node --version && cat /etc/os-release && npm run test:node && npm run test:deploy
 
 FROM runtime AS final

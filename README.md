@@ -2,7 +2,14 @@
 
 以阅读为先的个人博客，带文章管理面板。前台使用宋体与留白，后台使用同一套配色和更紧凑的操作布局。
 
-支持现有 Sites 托管和 **Ubuntu 26.04 自托管** 两种运行方式。Ubuntu 使用 Docker Compose、SQLite、持久化图片目录和独立管理员登录，提供升级前备份、迁移校验、健康检查与失败恢复。完整操作见 [Ubuntu 部署与升级指南](docs/deploy-ubuntu-26.04.md)。
+支持现有 Sites 托管和 **Ubuntu 26.04 自托管** 两种运行方式。Ubuntu 使用 Docker Compose、SQLite、持久化图片目录和独立管理员登录，提供升级前备份、迁移校验、健康检查与失败恢复。应用与 Caddy 镜像在本地或 CI 预先构建并打入发布包，服务器只需解包、导入并部署。完整操作见 [Ubuntu 部署与升级指南](docs/deploy-ubuntu-26.04.md)。
+
+```sh
+# 在构建机生成 amd64 发布包；ARM 服务器改用 linux/arm64。
+npm run release:build -- --release v0.1.0 --platform linux/amd64
+```
+
+产物位于 `outputs/releases/`，包含 `.tar.gz` 和独立 SHA256 校验文件。推送 `v*` tag 后，GitHub Actions 会在 amd64、arm64 原生 runner 上构建和验证，待两种架构与 Sites 检查全部通过后发布 GitHub Release；也可以手动运行工作流获取测试用发布包。
 
 ## 文章管理
 

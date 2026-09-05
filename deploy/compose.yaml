@@ -2,6 +2,7 @@ name: sparsity
 services:
   app:
     image: ${SPARSITY_IMAGE:?Use deploy/manage.sh}
+    pull_policy: never
     init: true
     restart: unless-stopped
     env_file: ${SPARSITY_ENV_FILE:?Use deploy/manage.sh}
@@ -24,7 +25,8 @@ services:
       options: { max-size: '10m', max-file: '3' }
 
   proxy:
-    image: caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    image: ${SPARSITY_PROXY_IMAGE:-caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648}
+    pull_policy: never
     restart: unless-stopped
     depends_on:
       app: { condition: service_healthy }
