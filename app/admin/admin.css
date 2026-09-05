@@ -243,6 +243,12 @@ body:has(.admin-shell) {
   align-items: start;
 }
 .editor-workspace {
+  --editor-column: 640px;
+  --editor-gutter: 40px;
+  --editor-inset: max(
+    var(--editor-gutter),
+    calc((100% - var(--editor-column)) / 2)
+  );
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -252,7 +258,7 @@ body:has(.admin-shell) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
+  padding: 16px var(--editor-inset);
   border-bottom: 1px solid var(--line);
 }
 .editor-viewbar > span {
@@ -264,10 +270,11 @@ body:has(.admin-shell) {
 }
 .editor-title {
   display: block;
-  width: calc(100% - 80px);
+  width: calc(100% - var(--editor-gutter) * 2);
+  max-width: var(--editor-column);
   height: auto !important;
   min-height: 100px;
-  margin: 24px 40px 8px;
+  margin: 24px auto 8px;
   padding: 12px 0 !important;
   font: 500 1.875rem/1.6 var(--serif) !important;
   border: 0;
@@ -287,7 +294,7 @@ body:has(.admin-shell) {
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 10px 24px;
+  padding: 10px var(--editor-inset);
   background: var(--paper);
   border-block: 1px solid var(--line);
   display: flex;
@@ -314,9 +321,9 @@ body:has(.admin-shell) {
 }
 .editor-prose {
   min-height: 560px;
-  max-width: 720px;
+  max-width: calc(var(--editor-column) + var(--editor-gutter) * 2);
   margin-inline: auto;
-  padding: 32px 40px 80px;
+  padding: 32px var(--editor-gutter) 80px;
   font-size: 1.0625rem;
   line-height: 2;
   outline: none;
@@ -423,7 +430,10 @@ body:has(.admin-shell) {
 }
 .editor-preview {
   min-height: 700px;
-  padding: 44px clamp(24px, 5vw, 64px) 80px;
+  width: 100%;
+  max-width: calc(var(--editor-column) + var(--editor-gutter) * 2);
+  margin-inline: auto;
+  padding: 44px var(--editor-gutter) 80px;
 }
 .editor-preview h1 {
   font: 500 2rem/1.7 var(--serif);
@@ -491,16 +501,11 @@ body:has(.admin-shell) {
     gap: 24px;
     grid-template-columns: minmax(0, 1fr) 210px;
   }
+  .editor-workspace {
+    --editor-gutter: 24px;
+  }
   .editor-title {
-    width: calc(100% - 48px);
-    margin-inline: 24px;
     font-size: 1.5rem !important;
-  }
-  .editor-toolbar {
-    padding-inline: 16px;
-  }
-  .editor-prose {
-    padding-inline: 24px;
   }
   .save-indicator {
     display: none;
@@ -569,11 +574,10 @@ body:has(.admin-shell) {
     border: 1px solid var(--line);
     border-radius: 8px;
   }
-  .editor-viewbar {
-    padding-inline: 20px;
+  .editor-workspace {
+    --editor-gutter: 20px;
   }
   .editor-toolbar {
-    padding-inline: 12px;
     gap: 2px;
   }
   .toolbar-divider {
@@ -581,7 +585,7 @@ body:has(.admin-shell) {
   }
   .editor-prose {
     min-height: 440px;
-    padding: 24px 20px 60px;
+    padding-block: 24px 60px;
     font-size: 1.0625rem;
   }
   .editor-title {

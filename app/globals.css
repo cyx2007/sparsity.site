@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'shadcn/tailwind.css';
 
 @theme inline {
   --color-background: var(--paper);
