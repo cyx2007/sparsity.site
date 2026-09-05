@@ -2,15 +2,14 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/site-shell';
-import { notes, formatDate } from '@/lib/notes';
+import { formatDate } from '@/lib/notes';
+import { publishedArticles } from '@/lib/articles';
 
 type Props = { params: Promise<{ slug: string }> };
-export const dynamicParams = false;
-export function generateStaticParams() {
-  return notes.map((note) => ({ slug: note.slug }));
-}
+export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const notes = await publishedArticles();
   const note = notes.find((item) => item.slug === slug);
   return note
     ? {
@@ -23,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NotePage({ params }: Props) {
   const { slug } = await params;
+  const notes = await publishedArticles();
   const index = notes.findIndex((note) => note.slug === slug);
   const note = notes[index];
   if (!note) notFound();
@@ -35,7 +35,7 @@ export default async function NotePage({ params }: Props) {
         <div className="article-breadcrumb">
           <a href="/#notes">
             <ArrowLeft size={15} strokeWidth={1.5} />
-            所有札记
+            所有文章
           </a>
         </div>
         <article>
@@ -43,7 +43,7 @@ export default async function NotePage({ params }: Props) {
             <p className="eyebrow accent">
               {note.category}
               {note.sample && (
-                <span className="article-sample"> / 示例札记</span>
+                <span className="article-sample"> / 示例文章</span>
               )}
             </p>
             <h1>{note.title}</h1>
@@ -96,7 +96,7 @@ export default async function NotePage({ params }: Props) {
                 className="prose"
                 dangerouslySetInnerHTML={{ __html: note.html }}
               />
-              <nav className="article-pagination" aria-label="相邻札记">
+              <nav className="article-pagination" aria-label="相邻文章">
                 {previous ? (
                   <a href={`/notes/${previous.slug}`}>
                     <span className="pagination-label">
@@ -111,7 +111,7 @@ export default async function NotePage({ params }: Props) {
                       <ArrowLeft size={14} />
                       回到目录
                     </span>
-                    <span className="pagination-title">所有札记</span>
+                    <span className="pagination-title">所有文章</span>
                   </a>
                 )}
                 {next && (

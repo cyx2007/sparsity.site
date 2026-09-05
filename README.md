@@ -1,75 +1,88 @@
 # 稀疏札记 · sparsity.tech
 
-以浏览和阅读为先的个人博客。偏冷纸白、墨色和朱红构成整套视觉；「稀疏」体现在文章之间的留白、标题与正文的节奏，以及从密到疏的点阵标记。
+以阅读为先的个人博客，带文章管理面板。前台使用宋体与留白，后台使用同一套配色和更紧凑的操作布局。
 
-## 本地运行
+## 文章管理
 
-使用 Node.js 22.13 或更新版本。
+从网站页脚的「管理」进入 `/admin`，使用站点所有者的 ChatGPT 账号登录。
+
+- 文章列表支持搜索，以及已发布、草稿、归档筛选。
+- 编辑器使用开源 [Tiptap](https://tiptap.dev/docs/editor)，管理控件复用项目内的 shadcn / Base UI。
+- 支持文章标题、段落、二三级标题、粗体、斜体、列表、引用、代码块、链接和图片；可预览正文。
+- 图片支持上传及从剪贴板粘贴，格式为 JPG、PNG、WebP、GIF，单张最多 5 MB。选中图片可以修改替代文字。
+- 保存草稿后可跨设备继续编辑。点击「发布文章」立即同步到首页和阅读页；已发布文章再次保存也会同步。
+- 文章可撤回为草稿、归档、从归档恢复。归档保留原文，不执行永久删除。
+- `⌘S` / `Ctrl+S` 保存。未保存离开时会提示；多处同时编辑时，旧版本不能覆盖新版本。
+- 新建文章可设置地址；首次保存后地址固定，保留已有 `/notes/…` 链接。
+
+站名继续使用「稀疏札记」，内容入口统一称为「文章」。GitHub 等外链放在关于页，管理员入口放在页脚。
+
+## 内容与存储
+
+文章存储在 Sites 管理的 D1，图片存储在 R2。浏览器存储不是内容数据源，不需要为发布文章重新部署网站。
+
+随项目附带的六篇文章是设计示例，首次运行会导入数据库一次，保留「示例」标记。此后以数据库为准，重新部署不会覆盖后台修改或恢复已归档文章。`content/notes/` 只保留初始种子内容，不再作为已运行站点的日常编辑入口。
+
+正文使用经过服务端清理的 HTML 存储。HTML 标签、属性和链接协议使用允许列表，图片检查文件签名与体积。正文二、三级标题自动生成目录，阅读时长按文字量估算。
+
+数据库结构位于 `db/schema.ts`，SQL 查询使用 D1 参数绑定。Drizzle 迁移位于 `drizzle/`，发布时由 Sites 执行；已应用迁移不应修改。内容初始化与数据库结构迁移分开。
+
+## 访问控制
+
+站点当前保持 private。管理页与每一个管理 API 都在服务端检查 Sites 提供的身份，写请求同时检查请求来源。后台权限不依赖隐藏按钮或前端判断。
+
+首次管理员登录时，服务端以 `SITE_OWNER_EMAIL` 匹配 Sites 验证过的站点所有者邮箱，并把该账号在此站点的稳定用户 ID 固定存入 `settings.admin_user_id`。之后只接受这个 ID。生产邮箱通过 Sites 运行时配置注入，不写入源码。更换管理员需要明确修改这项绑定。
+
+私有站点的外层登录与授权由 Sites 提供。即使日后调整站点访问范围，管理 API 和未发布图片仍有独立的权限检查。不要把本地模拟登录或测试请求头作为自建服务器的生产认证方式。
+
+## 本地开发
+
+使用 Node.js 22.13 或更新版本：
 
 ```sh
 npm ci
+npm run db:migrate
 npm run dev
 ```
 
-打开终端打印的 Local 地址。生产构建与校验：
+打开终端打印的 Local 地址。`/admin` 会使用 Sites 开发插件的本地模拟账号登录；开发身份仅在本地预览生效。`.env.example` 是本地邮箱设置示例，生产邮箱需在 Sites 配置。
 
 ```sh
 npm run check
+npm run lint
 npm test
 npm run build
 npm run verify
 ```
 
-## 写一篇札记
+开发服务运行时，可执行 `node scripts/verify-runtime.mjs` 验证完整的文章和图片流程。可用 `SITE_TEST_ORIGIN` 指定本地地址；脚本拒绝连接生产域名，会建立并最终归档带 `cms-check-` 前缀的本地校验文章。
 
-在 `content/notes/` 新建 Markdown 文件，例如 `my-first-note.md`：
+修改数据库结构后：
 
-```md
----
-title: 一篇新的札记
-description: 用一两句话介绍这篇文章。
-date: '2026-09-05'
-category: 日常
-sample: false
-draft: false
----
-
-从这里开始写正文。
-
-## 第一个小节
-
-支持常用 Markdown，包括引用、列表、链接、代码块和表格。
+```sh
+npm run db:generate
+npm run db:migrate
 ```
 
-文件名即文章地址，例如 `/notes/my-first-note`。日期须为加引号的 `YYYY-MM-DD`。文章自动按日期倒序排列，首页展示最新一篇和完整列表。阅读时长按中文字符数和英文词数估算；二、三级标题自动生成目录，重复标题也有独立锚点。
+`wrangler.local.jsonc` 只用于本地迁移，真实资源由 `.openai/hosting.json` 中的逻辑绑定交给 Sites 管理，不运行手动远程 D1 命令。
 
-`draft: true` 的文件不会生成页面或出现在目录中。`sample: true` 会显示示例标记；随项目附带的六篇文字均为原创设计示例，并非站主的真实经历或已发表文章，可以直接删除或替换。没有公开文章时首页显示空状态。
+## 架构与部署
 
-正文中的原始 HTML 会转义；链接支持 HTTPS、HTTP、mailto、以 `/` 或 `./` 开头的本地路径与 `#` 锚点。图片可放在 `public/images/` 并以 `/images/name.webp` 引用，请提供替代文字。
+- `app/page.tsx`、`app/notes/[slug]/page.tsx`：从数据库读取已发布文章并进行服务端渲染。
+- `app/about/page.tsx`：关于页及 GitHub 外链。
+- `app/admin/`、`components/admin/`：文章列表、Tiptap 编辑器和管理界面。
+- `app/api/admin/`、`app/media/`：文章与图片接口。
+- `lib/articles.ts`：内容初始化、查询、保存及并发版本检查。
+- `lib/admin-auth.ts`：管理员身份绑定及请求来源验证。
+- `lib/article-content.ts`：输入校验、安全清理和阅读目录。
+- `lib/site.ts`：站名、描述、域名与外链。
 
-## 站点配置与结构
+技术栈为 TypeScript、React、Vinext、Cloudflare Workers，保留原有 npm 锁文件与 Sites 工程结构。网站已从静态导出转为 Worker 服务；不能再仅部署 `dist/client`。服务器入口为 `dist/server/index.js`，数据库迁移和资源配置由 Sites 插件打包。
 
-- `lib/site.ts`：站名、描述、品牌域名和外链。GitHub 已设置为 `https://github.com/cyx2007`；向 `links` 添加记录即可扩展页脚外链。
-- `content/notes/`：独立 Markdown 博文。
-- `lib/notes.ts`：内容校验、排序和阅读时间。
-- `lib/markdown.ts`：Markdown 渲染与目录生成。
-- `app/page.tsx`：首页。
-- `app/about/page.tsx`：独立关于页，展示站点信息与外链。
-- `app/notes/[slug]/page.tsx`：文章页面。
-- `app/globals.css`：视觉变量、桌面/移动版式、焦点和打印样式。
+中文字体使用本地托管的 Noto Serif SC，日期与代码使用 IBM Plex Mono。中文字体按字符范围分块加载，许可证保留在 `public/fonts/`。编辑器与管理界面单独打包，阅读页无需下载编辑器。
 
-技术栈为 TypeScript、React、Vinext（Vite / Next.js 路由 API），通过 `output: 'export'` 生成静态 HTML。文章内容在构建时完成渲染；阅读和目录导航不依赖客户端请求。没有数据库、登录、追踪脚本或运行时外部字体请求。保留了 Sites 初始组件库供后续扩展，未用组件不会进入页面打包。
+品牌文字 `sparsity.tech` 不代表已绑定自定义域名，实际地址以 Sites 发布结果为准。生产访问权限由 Sites 管理，本次发布保持 private。
 
-中文标题与正文使用 [Noto Serif SC](https://fontsource.org/fonts/noto-serif-sc)，英文标识、日期与代码使用 [IBM Plex Mono](https://fontsource.org/fonts/ibm-plex-mono)，菜单和摘要使用系统黑体。字体通过固定版本的 Fontsource 包本地托管，使用 `font-display: swap`；中文字体由 `unicode-range` 分块加载，新增文章无需手动制作字体子集。字体许可证位于 `public/fonts/`。GitHub 等外链统一放在关于页。
+内容安全测试和本地 HTTP 流程验证覆盖草稿、发布、图片、归档、权限、CSRF 和修改冲突；未执行浏览器交互或真实设备视觉验收。脚手架依赖仍存在上游审计提示，可运行 `npm audit` 查看；不要将本地开发服务直接暴露为生产服务。项目未使用 Server Actions。
 
-## 部署与验证
-
-静态输出在 `dist/client/`，可交给支持 `.html` 省略扩展名访问、`index.html` 和 `404.html` 的静态托管服务。Sites 配置在 `.openai/hosting.json`；预览默认仅站点所有者可访问。
-
-品牌文字使用 `sparsity.tech` 不代表已绑定该域名。自定义域名、DNS 和公开访问权限需要单独配置。替换示例博文后再公开；示例文章的元数据设为 `noindex`，真实文章不继承这一限制。
-
-已提供中文语义化结构、键盘跳转正文、可见焦点、原生页内目录、减少动态效果和打印排版。校验脚本检查静态文章是否完整生成、链接与锚点是否对应；浏览器视觉、交互和真实设备验收需另行执行。
-
-初始脚手架的固定依赖版本存在上游审计提示（可运行 `npm audit` 查看）；本项目交付静态文件，不部署这些包的服务端运行时。未来启用服务端功能前应先升级并重新验证相关依赖。
-
-项目采用原生链接做静态页面导航，因此关闭 Next.js 专用的 Link 规则。Lint 检查自有代码，预置且未修改的 `components/ui/` 与 `hooks/use-mobile.ts` 不在检查范围内；类型检查仍覆盖它们。
+项目采用原生链接导航，关闭 Next.js 专用 Link 规则。Lint 检查自有代码；预置且未修改的 `components/ui/` 和 `hooks/use-mobile.ts` 不在 Lint 范围内，类型检查仍覆盖它们。

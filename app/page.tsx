@@ -1,9 +1,12 @@
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/site-shell';
 import { SparseField } from '@/components/sparse-field';
-import { notes, formatDate } from '@/lib/notes';
+import { formatDate } from '@/lib/notes';
+import { publishedArticles } from '@/lib/articles';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+export default async function Home() {
+  const notes = await publishedArticles();
   const [featured, ...otherNotes] = notes;
   return (
     <>
@@ -27,7 +30,7 @@ export default function Home() {
         >
           <aside className="section-margin">
             <h2 id="notes-heading">
-              近期札记
+              近期文章
               <span className="note-count">
                 {String(notes.length).padStart(2, '0')}
               </span>
@@ -38,7 +41,7 @@ export default function Home() {
               <article className="featured-note">
                 <a className="featured-link" href={`/notes/${featured.slug}`}>
                   <div className="entry-topline">
-                    <span className="eyebrow accent">最新札记</span>
+                    <span className="eyebrow accent">最新文章</span>
                     <span className="small-meta">
                       {featured.category}
                       {featured.sample && ' · 示例'}
@@ -63,7 +66,7 @@ export default function Home() {
               </article>
             ) : (
               <div className="empty-journal">
-                <h3>暂无札记</h3>
+                <h3>暂无文章</h3>
               </div>
             )}
             <div className="note-list">

@@ -10,7 +10,7 @@ export default function NotFound() {
         <h1>页面不存在</h1>
         <a href="/">
           <ArrowLeft size={16} />
-          回到札记
+          回到文章
         </a>
       </main>
       <SiteFooter />

@@ -1,81 +1,23 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
-import matter from 'gray-matter';
 
-const output = path.resolve('dist/client');
-const home = readFileSync(path.join(output, 'index.html'), 'utf8');
-assert.match(home, /lang="zh-CN"/);
-assert.match(home, /稀疏/);
-assert.match(home, /id="main-content"/);
-const files = readdirSync('content/notes').filter((file) =>
-  file.endsWith('.md'),
+assert.ok(existsSync('dist/server/index.js'), 'Missing Worker entrypoint');
+const entry = readFileSync('dist/server/index.js', 'utf8');
+assert.match(entry, /export\s*\{/);
+assert.match(entry, /default/);
+const config = JSON.parse(readFileSync('dist/.openai/hosting.json', 'utf8'));
+assert.equal(config.d1, 'DB');
+assert.equal(config.r2, 'MEDIA');
+assert.ok(!config.static, 'Server build must not publish a static export');
+const migrations = readdirSync('dist/.openai/drizzle').filter((name) =>
+  name.endsWith('.sql'),
 );
-const pages = [
-  { route: '/', html: home },
-  {
-    route: '/about',
-    html: readFileSync(path.join(output, 'about.html'), 'utf8'),
-  },
-];
-let published = 0;
-for (const file of files) {
-  const { data } = matter(
-    readFileSync(path.join('content/notes', file), 'utf8'),
-  );
-  const slug = file.slice(0, -3);
-  const target = path.join(output, 'notes', `${slug}.html`);
-  if (data.draft === true) {
-    assert.ok(!existsSync(target), `Draft leaked: ${file}`);
-    continue;
-  }
-  const html = readFileSync(target, 'utf8');
-  assert.ok(home.includes(`/notes/${slug}`), `Missing home link: ${slug}`);
-  assert.ok(html.includes(data.title), `Missing title: ${slug}`);
-  assert.ok(html.includes(data.description), `Missing description: ${slug}`);
-  assert.match(html, /class="prose"/);
-  assert.ok(
-    html.includes('示例札记') === (data.sample === true),
-    `Incorrect sample marker: ${slug}`,
-  );
-  pages.push({ route: `/notes/${slug}`, html });
-  published++;
-}
-assert.ok(existsSync(path.join(output, '404.html')), 'Missing static 404 page');
-assert.ok(
-  !home.includes('Your site is taking shape'),
-  'Starter content remains',
+assert.ok(migrations.length > 0, 'Missing database migration');
+assert.ok(existsSync('dist/client/favicon.svg'));
+const fonts = readdirSync('dist/client/_next/static/media').filter(
+  (name) => name.endsWith('.woff2') || name.endsWith('.woff'),
 );
-for (const page of pages) {
-  assert.equal(
-    [...page.html.matchAll(/<h1[ >]/g)].length,
-    1,
-    `Expected one h1: ${page.route}`,
-  );
-  for (const [, href] of page.html.matchAll(/(?:href|src)="([^"\\]*)"/g)) {
-    if (!href.startsWith('/') && !href.startsWith('#')) continue;
-    const url = new URL(href, `https://local.test${page.route}`);
-    const local = path.join(
-      output,
-      decodeURIComponent(url.pathname),
-      url.pathname.endsWith('/') ? 'index.html' : '',
-    );
-    assert.ok(
-      existsSync(local) || existsSync(`${local}.html`),
-      `Broken local link ${href} in ${page.route}`,
-    );
-    if (url.hash) {
-      const target = readFileSync(
-        existsSync(local) ? local : `${local}.html`,
-        'utf8',
-      );
-      assert.ok(
-        target.includes(`id="${decodeURIComponent(url.hash.slice(1))}"`),
-        `Missing anchor ${href} in ${page.route}`,
-      );
-    }
-  }
-}
+assert.ok(fonts.length >= 102, 'Missing locally hosted fonts');
 console.log(
-  `Verified homepage, about page, ${published} complete articles, metadata, local links, heading anchors, sample labels and static 404.`,
+  'Verified Worker, D1/R2 configuration, database migrations, site assets and fonts.',
 );

@@ -40,7 +40,7 @@ export function SiteHeader({
           href="/"
           aria-current={page === 'notes' ? 'page' : undefined}
         >
-          札记
+          文章
         </a>
         <a
           className={page === 'about' ? 'nav-active' : undefined}
@@ -61,6 +61,9 @@ export function SiteFooter() {
         {site.name}
       </a>
       <span className="footer-copyright">© {new Date().getFullYear()}</span>
+      <a href="/admin" className="footer-admin">
+        管理
+      </a>
     </footer>
   );
 }
