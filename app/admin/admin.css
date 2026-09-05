@@ -278,6 +278,7 @@ body:has(.admin-shell) {
   padding: 12px 0 !important;
   font: 500 1.875rem/1.6 var(--serif) !important;
   border: 0;
+  background: transparent;
   box-shadow: none !important;
   border-radius: 0;
 }

@@ -154,7 +154,8 @@ export function ArticleEditor({
   const wordCount = editor?.getText().replace(/\s/g, '').length ?? 0;
 
   useEffect(() => {
-    editor?.setEditable(!locked);
+    // Locking during saves/uploads does not change the document.
+    editor?.setEditable(!locked, false);
   }, [editor, locked]);
   useEffect(() => {
     if (!dirty && !uploading) return;
