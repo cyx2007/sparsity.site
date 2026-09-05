@@ -3,6 +3,7 @@ ARG NODE_IMAGE=node:22.23.1-bookworm-slim@sha256:6c74791e557ce11fc957704f6d4fe13
 FROM ${NODE_IMAGE} AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY scripts/patch-vinext-image-size.mjs ./scripts/
 RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run check && npm run lint && npm test && npm run test:node && npm run build:node && npm run verify:node
