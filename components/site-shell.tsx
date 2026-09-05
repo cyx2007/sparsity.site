@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { site } from '@/lib/site';
 
 export function SparseMark() {
@@ -57,13 +58,39 @@ export function SiteHeader({
 export function SiteFooter() {
   return (
     <footer className="site-footer site-width">
-      <a href="/" className="footer-wordmark">
-        {site.name}
-      </a>
-      <span className="footer-copyright">© {new Date().getFullYear()}</span>
-      <a href="/admin" className="footer-admin">
-        管理
-      </a>
+      <div className="footer-topline">
+        <a href="/" className="footer-wordmark">
+          {site.name}
+        </a>
+        <span className="footer-copyright">© {new Date().getFullYear()}</span>
+        <a href="/admin" className="footer-admin">
+          管理
+        </a>
+      </div>
+      <nav className="footer-records" aria-label="网站备案信息">
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          粤ICP备2026118989号-1
+        </a>
+        <a
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=44030002016095"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src="/beian.png"
+            width={18}
+            height={20}
+            alt=""
+            aria-hidden="true"
+            unoptimized
+          />
+          <span>粤公网安备44030002016095号</span>
+        </a>
+      </nav>
     </footer>
   );
 }
