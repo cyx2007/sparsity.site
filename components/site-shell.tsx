@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { site } from '@/lib/site';
 
 export function SparseMark() {
@@ -80,13 +79,13 @@ export function SiteFooter() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
+          {/* oxlint-disable-next-line nextjs/no-img-element -- Keep the small official badge static and unmodified. */}
+          <img
             src="/beian.png"
             width={18}
             height={20}
             alt=""
             aria-hidden="true"
-            unoptimized
           />
           <span>粤公网安备44030002016095号</span>
         </a>
