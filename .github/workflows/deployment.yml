@@ -28,9 +28,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # The runner's Docker 28.0 client lacks image inspect --platform.
-      - uses: docker/setup-docker-action@v5
-        with:
-          version: v29.7.2
+      - name: Install the pinned Docker CLI and Engine
+        env:
+          DOCKER_PACKAGE_VERSION: 5:29.7.2-1~ubuntu.24.04~noble
+        run: |
+          sudo install -m 0755 -d /etc/apt/keyrings
+          sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/sparsity-docker.asc
+          sudo chmod 0644 /etc/apt/keyrings/sparsity-docker.asc
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/sparsity-docker.asc] https://download.docker.com/linux/ubuntu noble stable" > "$RUNNER_TEMP/sparsity-docker.list"
+          apt_options=(-o "Dir::Etc::sourcelist=$RUNNER_TEMP/sparsity-docker.list" -o "Dir::Etc::sourceparts=-")
+          sudo apt-get "${apt_options[@]}" update
+          sudo apt-get "${apt_options[@]}" install --yes --no-install-recommends "docker-ce=$DOCKER_PACKAGE_VERSION" "docker-ce-cli=$DOCKER_PACKAGE_VERSION"
+          sudo systemctl restart docker
+          docker version
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
