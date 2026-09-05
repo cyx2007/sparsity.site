@@ -11,7 +11,13 @@ assert.match(home, /id="main-content"/);
 const files = readdirSync('content/notes').filter((file) =>
   file.endsWith('.md'),
 );
-const pages = [{ route: '/', html: home }];
+const pages = [
+  { route: '/', html: home },
+  {
+    route: '/about',
+    html: readFileSync(path.join(output, 'about.html'), 'utf8'),
+  },
+];
 let published = 0;
 for (const file of files) {
   const { data } = matter(
@@ -71,5 +77,5 @@ for (const page of pages) {
   }
 }
 console.log(
-  `Verified homepage, ${published} complete articles, metadata, local links, heading anchors, sample labels and static 404.`,
+  `Verified homepage, about page, ${published} complete articles, metadata, local links, heading anchors, sample labels and static 404.`,
 );

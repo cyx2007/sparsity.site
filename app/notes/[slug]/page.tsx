@@ -30,16 +30,13 @@ export default async function NotePage({ params }: Props) {
   const next = notes[index + 1];
   return (
     <>
-      <SiteHeader article />
+      <SiteHeader page="article" />
       <main id="main-content" className="site-width article-main">
         <div className="article-breadcrumb">
           <a href="/#notes">
             <ArrowLeft size={15} strokeWidth={1.5} />
             所有札记
           </a>
-          <span className="eyebrow">
-            NOTE / {String(index + 1).padStart(3, '0')}
-          </span>
         </div>
         <article>
           <header className="article-header">
@@ -60,8 +57,7 @@ export default async function NotePage({ params }: Props) {
           <div className="article-layout">
             <aside className="article-margin">
               <nav className="desktop-toc" aria-label="文章目录">
-                <p className="eyebrow">IN THIS NOTE</p>
-                <p className="toc-title">本篇目录</p>
+                <p className="toc-title">目录</p>
                 <ol>
                   {note.headings.map((heading, i) => (
                     <li
@@ -81,7 +77,7 @@ export default async function NotePage({ params }: Props) {
               </nav>
               <details className="mobile-toc">
                 <summary>
-                  本篇目录
+                  目录
                   <ChevronDown size={16} />
                 </summary>
                 <nav aria-label="文章目录">
@@ -100,10 +96,6 @@ export default async function NotePage({ params }: Props) {
                 className="prose"
                 dangerouslySetInnerHTML={{ __html: note.html }}
               />
-              <div className="article-end">
-                <span className="red-dot" />
-                <span>写于 {formatDate(note.date)}</span>
-              </div>
               <nav className="article-pagination" aria-label="相邻札记">
                 {previous ? (
                   <a href={`/notes/${previous.slug}`}>
@@ -119,7 +111,7 @@ export default async function NotePage({ params }: Props) {
                       <ArrowLeft size={14} />
                       回到目录
                     </span>
-                    <span className="pagination-title">看看其他札记</span>
+                    <span className="pagination-title">所有札记</span>
                   </a>
                 )}
                 {next && (

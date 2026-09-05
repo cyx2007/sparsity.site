@@ -4,11 +4,10 @@ import { SiteHeader, SiteFooter } from '@/components/site-shell';
 export default function NotFound() {
   return (
     <>
-      <SiteHeader article />
+      <SiteHeader page="not-found" />
       <main id="main-content" className="site-width not-found">
-        <p className="eyebrow accent">404 / A BLANK PAGE</p>
-        <h1>这一页，还是空白。</h1>
-        <p>这篇札记可能已经搬走，或尚未写下。</p>
+        <p className="eyebrow accent">404</p>
+        <h1>页面不存在</h1>
         <a href="/">
           <ArrowLeft size={16} />
           回到札记

@@ -54,6 +54,7 @@ draft: false
 - `lib/notes.ts`：内容校验、排序和阅读时间。
 - `lib/markdown.ts`：Markdown 渲染与目录生成。
 - `app/page.tsx`：首页。
+- `app/about/page.tsx`：独立关于页，展示站点信息与外链。
 - `app/notes/[slug]/page.tsx`：文章页面。
 - `app/globals.css`：视觉变量、桌面/移动版式、焦点和打印样式。
 

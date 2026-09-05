@@ -2,7 +2,6 @@ import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/site-shell';
 import { SparseField } from '@/components/sparse-field';
 import { notes, formatDate } from '@/lib/notes';
-import { site } from '@/lib/site';
 
 export default function Home() {
   const [featured, ...otherNotes] = notes;
@@ -12,19 +11,13 @@ export default function Home() {
       <main id="main-content" className="site-width">
         <section className="masthead" aria-labelledby="site-title">
           <div className="masthead-copy">
-            <p className="eyebrow masthead-kicker">A PERSONAL JOURNAL</p>
             <h1 id="site-title">
               稀疏<span>札记</span>
               <i aria-hidden="true">.</i>
             </h1>
-            <p className="masthead-description">{site.description}</p>
           </div>
           <div className="masthead-art" aria-hidden="true">
             <SparseField />
-            <span className="field-caption">
-              <span>疏密之间</span>
-              <span>FIG. 01</span>
-            </span>
           </div>
         </section>
         <section
@@ -33,23 +26,12 @@ export default function Home() {
           aria-labelledby="notes-heading"
         >
           <aside className="section-margin">
-            <p className="eyebrow section-number">
-              <span className="red-dot" />
-              01 / JOURNAL
-            </p>
             <h2 id="notes-heading">
               近期札记
               <span className="note-count">
                 {String(notes.length).padStart(2, '0')}
               </span>
             </h2>
-            <p className="margin-note">
-              一些思考的切片，
-              <br />
-              一些缓慢生长的答案。
-            </p>
-            <div className="margin-rule" aria-hidden="true" />
-            <p className="small-meta">不定期更新</p>
           </aside>
           <div className="journal-entries">
             {featured ? (
@@ -73,7 +55,7 @@ export default function Home() {
                       <span>{featured.minutes} 分钟阅读</span>
                     </span>
                     <span className="read-link">
-                      读这一篇
+                      阅读
                       <ArrowUpRight size={17} strokeWidth={1.5} />
                     </span>
                   </div>
@@ -81,8 +63,7 @@ export default function Home() {
               </article>
             ) : (
               <div className="empty-journal">
-                <h3>第一篇，正在酝酿。</h3>
-                <p>一些想法需要时间，写好后会放在这里。</p>
+                <h3>暂无札记</h3>
               </div>
             )}
             <div className="note-list">
@@ -116,12 +97,6 @@ export default function Home() {
                   </a>
                 </article>
               ))}
-            </div>
-            <div className="list-end">
-              <span>暂时写到这里。</span>
-              <span className="end-dots" aria-hidden="true">
-                · &nbsp; · &nbsp; ·
-              </span>
             </div>
           </div>
         </section>
