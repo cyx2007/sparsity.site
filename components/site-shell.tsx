@@ -1,5 +1,3 @@
-import { site } from '@/lib/site';
-
 export function SparseMark() {
   return (
     <svg
@@ -57,15 +55,6 @@ export function SiteHeader({
 export function SiteFooter() {
   return (
     <footer className="site-footer site-width">
-      <div className="footer-topline">
-        <a href="/" className="footer-wordmark">
-          {site.name}
-        </a>
-        <span className="footer-copyright">© {new Date().getFullYear()}</span>
-        <a href="/admin" className="footer-admin">
-          管理
-        </a>
-      </div>
       <nav className="footer-records" aria-label="网站备案信息">
         <a
           href="https://beian.miit.gov.cn/"
