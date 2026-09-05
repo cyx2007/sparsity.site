@@ -8,6 +8,13 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
+    "build:node": "node scripts/build-node.mjs",
+    "start:node": "node scripts/start-node.mjs",
+    "db:migrate:node": "node scripts/migrate-node.mjs",
+    "verify:node": "node scripts/verify-node-build.mjs",
+    "test:node": "node --test tests/node-*.test.mjs",
+    "test:deploy": "node scripts/test-node-deployment.mjs",
+    "test:compose": "node scripts/test-compose.mjs",
     "start": "vinext start",
     "check": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",

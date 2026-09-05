@@ -5,11 +5,13 @@ assert.ok(
   ['localhost', '127.0.0.1'].includes(new URL(origin).hostname),
   'This test writes fixtures and must only run locally.',
 );
-const auth = {
-  Cookie: '__sites_local_auth=1',
-  'oai-authenticated-user-id': 'local_seedy',
-  'oai-authenticated-user-email': 'seedy@sites.test',
-};
+const auth = process.env.SITE_TEST_COOKIE
+  ? { Cookie: process.env.SITE_TEST_COOKIE }
+  : {
+      Cookie: '__sites_local_auth=1',
+      'oai-authenticated-user-id': 'local_seedy',
+      'oai-authenticated-user-email': 'seedy@sites.test',
+    };
 const mutation = {
   ...auth,
   Origin: origin,

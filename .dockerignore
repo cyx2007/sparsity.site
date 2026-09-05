@@ -1,0 +1,15 @@
+node_modules
+.git
+.next
+.vinext
+.wrangler
+dist
+.env
+.env.*
+*.tsbuildinfo
+data
+backups
+outputs
+work
+.DS_Store
+npm-debug.log*

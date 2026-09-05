@@ -1,7 +1,3 @@
-import { env } from 'cloudflare:workers';
-
-type Runtime = { DB: D1Database; MEDIA: R2Bucket; SITE_OWNER_EMAIL?: string };
-
-export function runtime(): Runtime {
-  return env as unknown as Runtime;
-}
+// Vite selects the provider at build time. Cloudflare modules never enter the
+// Node build, and filesystem/credential code never enters the Sites build.
+export { runtime } from '#runtime-provider';
