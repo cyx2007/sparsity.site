@@ -12,6 +12,12 @@ export class HttpError extends Error {
 }
 
 export async function adminIdentity(requestHeaders: Headers): Promise<string> {
+  const localIdentity = runtime().localIdentity;
+  if (localIdentity) {
+    const id = localIdentity(requestHeaders);
+    if (!id) throw new HttpError(401, '请先登录。');
+    return id;
+  }
   const id = requestHeaders.get('oai-authenticated-user-id');
   if (!id) throw new HttpError(401, '请先登录。');
   const { DB, SITE_OWNER_EMAIL } = runtime();
@@ -47,7 +53,7 @@ export async function requireAdminPage(returnTo: string) {
   } catch (error) {
     if (error instanceof HttpError && error.status === 401)
       redirect(
-        `/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`,
+        `${runtime().localIdentity ? '/auth/login' : '/signin-with-chatgpt'}?return_to=${encodeURIComponent(returnTo)}`,
       );
     if (error instanceof HttpError && error.status === 403) notFound();
     throw error;
@@ -56,7 +62,8 @@ export async function requireAdminPage(returnTo: string) {
 
 export function requireSameOrigin(request: Request) {
   if (
-    request.headers.get('origin') !== new URL(request.url).origin ||
+    request.headers.get('origin') !==
+      (runtime().SITE_ORIGIN ?? new URL(request.url).origin) ||
     request.headers.get('x-requested-with') !== 'sparsity-admin'
   ) {
     throw new HttpError(403, '请求来源无效，请刷新页面后重试。');

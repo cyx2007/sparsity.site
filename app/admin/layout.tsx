@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ArrowUpRight } from 'lucide-react';
 import { SparseMark } from '@/components/site-shell';
+import { runtime } from '@/lib/runtime';
 import './admin.css';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,13 @@ export default function AdminLayout({
           <span>sparsity.tech</span>
           <span className="admin-brand-label">管理</span>
         </a>
+        {runtime().localIdentity && (
+          <form action="/auth/logout" method="post">
+            <button type="submit" className="admin-visit">
+              退出登录
+            </button>
+          </form>
+        )}
         <a href="/" className="admin-visit">
           浏览网站
           <ArrowUpRight size={16} />

@@ -3,6 +3,8 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig, loadEnv } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
+import { fileURLToPath } from 'node:url';
+import { rmSync } from 'node:fs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -35,6 +37,31 @@ const localBindingConfig = {
 };
 
 export default defineConfig(async ({ command, mode }) => {
+  const selfHosted = process.env.DEPLOY_TARGET === 'node';
+  if (
+    process.env.DEPLOY_TARGET &&
+    !selfHosted &&
+    process.env.DEPLOY_TARGET !== 'sites'
+  )
+    throw new Error('DEPLOY_TARGET must be node or sites');
+  const base = {
+    css: { postcss: { plugins: [tailwindcss()] } },
+    resolve: {
+      alias: {
+        '#runtime-provider': fileURLToPath(
+          new URL(
+            selfHosted ? './lib/runtime-node.ts' : './lib/runtime-sites.ts',
+            import.meta.url,
+          ),
+        ),
+      },
+    },
+    server: isCodexSeatbeltSandbox
+      ? { watch: { useFsEvents: false, usePolling: true } }
+      : undefined,
+  };
+  if (selfHosted) return { ...base, plugins: [vinext()] };
+  if (command === 'build') rmSync('dist/node-manifest.json', { force: true });
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -45,10 +72,7 @@ export default defineConfig(async ({ command, mode }) => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
-    css: { postcss: { plugins: [tailwindcss()] } },
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    ...base,
     plugins: [
       vinext(),
       sites(),

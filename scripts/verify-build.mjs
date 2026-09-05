@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 assert.ok(existsSync('dist/server/index.js'), 'Missing Worker entrypoint');
+assert.ok(!existsSync('dist/node-manifest.json'), 'Stale Node build manifest');
 const entry = readFileSync('dist/server/index.js', 'utf8');
 assert.match(entry, /export\s*\{/);
 assert.match(entry, /default/);
