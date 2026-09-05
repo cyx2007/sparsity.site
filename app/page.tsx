@@ -1,0 +1,132 @@
+import { ArrowUpRight } from 'lucide-react';
+import { SiteHeader, SiteFooter } from '@/components/site-shell';
+import { SparseField } from '@/components/sparse-field';
+import { notes, formatDate } from '@/lib/notes';
+import { site } from '@/lib/site';
+
+export default function Home() {
+  const [featured, ...otherNotes] = notes;
+  return (
+    <>
+      <SiteHeader />
+      <main id="main-content" className="site-width">
+        <section className="masthead" aria-labelledby="site-title">
+          <div className="masthead-copy">
+            <p className="eyebrow masthead-kicker">A PERSONAL JOURNAL</p>
+            <h1 id="site-title">
+              稀疏<span>札记</span>
+              <i aria-hidden="true">.</i>
+            </h1>
+            <p className="masthead-description">{site.description}</p>
+          </div>
+          <div className="masthead-art" aria-hidden="true">
+            <SparseField />
+            <span className="field-caption">
+              <span>疏密之间</span>
+              <span>FIG. 01</span>
+            </span>
+          </div>
+        </section>
+        <section
+          id="notes"
+          className="journal-grid"
+          aria-labelledby="notes-heading"
+        >
+          <aside className="section-margin">
+            <p className="eyebrow section-number">
+              <span className="red-dot" />
+              01 / JOURNAL
+            </p>
+            <h2 id="notes-heading">
+              近期札记
+              <span className="note-count">
+                {String(notes.length).padStart(2, '0')}
+              </span>
+            </h2>
+            <p className="margin-note">
+              一些思考的切片，
+              <br />
+              一些缓慢生长的答案。
+            </p>
+            <div className="margin-rule" aria-hidden="true" />
+            <p className="small-meta">不定期更新</p>
+          </aside>
+          <div className="journal-entries">
+            {featured ? (
+              <article className="featured-note">
+                <a className="featured-link" href={`/notes/${featured.slug}`}>
+                  <div className="entry-topline">
+                    <span className="eyebrow accent">最新札记</span>
+                    <span className="small-meta">
+                      {featured.category}
+                      {featured.sample && ' · 示例'}
+                    </span>
+                  </div>
+                  <h3>{featured.title}</h3>
+                  <p className="featured-excerpt">{featured.description}</p>
+                  <div className="entry-bottomline">
+                    <span className="entry-metadata">
+                      <time dateTime={featured.date}>
+                        {formatDate(featured.date)}
+                      </time>
+                      <span className="meta-divider">/</span>
+                      <span>{featured.minutes} 分钟阅读</span>
+                    </span>
+                    <span className="read-link">
+                      读这一篇
+                      <ArrowUpRight size={17} strokeWidth={1.5} />
+                    </span>
+                  </div>
+                </a>
+              </article>
+            ) : (
+              <div className="empty-journal">
+                <h3>第一篇，正在酝酿。</h3>
+                <p>一些想法需要时间，写好后会放在这里。</p>
+              </div>
+            )}
+            <div className="note-list">
+              {otherNotes.map((note, index) => (
+                <article className="note-row" key={note.slug}>
+                  <span className="entry-index" aria-hidden="true">
+                    {String(index + 2).padStart(2, '0')}
+                  </span>
+                  <a href={`/notes/${note.slug}`} className="note-link">
+                    <div className="note-row-main">
+                      <span className="note-row-category">
+                        {note.category}
+                        {note.sample && ' · 示例'}
+                      </span>
+                      <h3>{note.title}</h3>
+                      <p>{note.description}</p>
+                    </div>
+                    <div className="note-row-end">
+                      <time dateTime={note.date}>
+                        {formatDate(
+                          note.date,
+                          note.date.slice(0, 4) === featured?.date.slice(0, 4),
+                        )}
+                      </time>
+                      <ArrowUpRight
+                        className="entry-arrow"
+                        size={20}
+                        strokeWidth={1.3}
+                      />
+                    </div>
+                  </a>
+                </article>
+              ))}
+            </div>
+            <div className="list-end">
+              <span>暂时写到这里。</span>
+              <span className="end-dots" aria-hidden="true">
+                · &nbsp; · &nbsp; ·
+              </span>
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
