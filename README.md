@@ -60,6 +60,8 @@ draft: false
 
 技术栈为 TypeScript、React、Vinext（Vite / Next.js 路由 API），通过 `output: 'export'` 生成静态 HTML。文章内容在构建时完成渲染；阅读和目录导航不依赖客户端请求。没有数据库、登录、追踪脚本或运行时外部字体请求。保留了 Sites 初始组件库供后续扩展，未用组件不会进入页面打包。
 
+中文标题与正文使用 [Noto Serif SC](https://fontsource.org/fonts/noto-serif-sc)，英文标识、日期与代码使用 [IBM Plex Mono](https://fontsource.org/fonts/ibm-plex-mono)，菜单和摘要使用系统黑体。字体通过固定版本的 Fontsource 包本地托管，使用 `font-display: swap`；中文字体由 `unicode-range` 分块加载，新增文章无需手动制作字体子集。字体许可证位于 `public/fonts/`。GitHub 等外链统一放在关于页。
+
 ## 部署与验证
 
 静态输出在 `dist/client/`，可交给支持 `.html` 省略扩展名访问、`index.html` 和 `404.html` 的静态托管服务。Sites 配置在 `.openai/hosting.json`；预览默认仅站点所有者可访问。

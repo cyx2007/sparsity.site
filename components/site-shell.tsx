@@ -1,4 +1,3 @@
-import { ArrowUpRight } from 'lucide-react';
 import { site } from '@/lib/site';
 
 export function SparseMark() {
@@ -50,20 +49,6 @@ export function SiteHeader({
         >
           关于
         </a>
-        {site.links[0] && (
-          <>
-            <span className="nav-separator" aria-hidden="true" />
-            <a
-              className="header-external"
-              href={site.links[0].href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {site.links[0].label}
-              <ArrowUpRight size={14} />
-            </a>
-          </>
-        )}
       </nav>
     </header>
   );

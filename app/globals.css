@@ -19,9 +19,10 @@
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --serif:
-    'Iowan Old Style', 'Palatino Linotype', 'Songti SC', 'Noto Serif CJK SC',
+    'Noto Serif SC Variable', 'Songti SC', 'Noto Serif CJK SC',
     'Source Han Serif SC', 'STSong', 'SimSun', serif;
-  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --mono:
+    'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
   color-scheme: light;
   font-family: var(--sans);
   color: var(--ink);
@@ -123,8 +124,8 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 13px;
-  font: 1.125rem/1 var(--mono);
-  letter-spacing: -0.055em;
+  font: 1rem/1.4 var(--mono);
+  letter-spacing: -0.025em;
 }
 .brand-mark {
   width: 27px;
@@ -139,8 +140,9 @@ button {
 .site-header nav {
   display: flex;
   align-items: center;
-  gap: 32px;
-  font-size: 0.875rem;
+  gap: 36px;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
 }
 .site-header nav > a {
   min-height: 44px;
@@ -167,16 +169,6 @@ button {
   border-radius: 50%;
   background: var(--red);
 }
-.nav-separator {
-  width: 1px;
-  height: 14px;
-  background: var(--line);
-  margin-inline: -7px;
-}
-.header-external {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-}
 .masthead {
   display: grid;
   grid-template-columns: 1fr 280px;
@@ -186,13 +178,13 @@ button {
 }
 .masthead h1 {
   font-family: var(--serif);
-  font-size: clamp(3.5rem, 5.7vw, 5.1rem);
+  font-size: clamp(3.25rem, 5.5vw, 4.75rem);
   font-weight: 500;
   line-height: 1.2;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.06em;
 }
 .masthead h1 span {
-  margin-left: 0.12em;
+  margin-left: 0.1em;
 }
 .masthead h1 i {
   color: var(--red);
@@ -221,9 +213,9 @@ button {
 }
 .section-margin h2 {
   font-family: var(--serif);
-  font-size: 1.5625rem;
+  font-size: 1.375rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.025em;
 }
 .note-count {
   font: 0.75rem/1 var(--mono);
@@ -259,8 +251,9 @@ button {
   font-family: var(--serif);
   font-weight: 500;
   font-size: clamp(1.8rem, 2.6vw, 2.2rem);
-  line-height: 1.5;
-  letter-spacing: 0.025em;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
   margin-top: 21px;
   transition: color 0.2s ease;
 }
@@ -271,7 +264,7 @@ button {
 .featured-excerpt {
   color: var(--subtle);
   font-size: 1rem;
-  line-height: 1.95;
+  line-height: 1.85;
   max-width: 36em;
   margin-top: 14px;
 }
@@ -285,6 +278,7 @@ button {
   gap: 12px;
   color: var(--muted);
   font: 0.75rem/1.7 var(--mono);
+  font-variant-numeric: tabular-nums;
 }
 .meta-divider {
   color: #a3a89f;
@@ -334,8 +328,9 @@ button {
   margin-bottom: 8px;
 }
 .note-row h3 {
-  font: 500 1.375rem/1.55 var(--serif);
-  letter-spacing: 0.025em;
+  font: 500 1.4375rem/1.65 var(--serif);
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
   transition: color 0.2s ease;
 }
 .note-row-main {
@@ -343,8 +338,8 @@ button {
 }
 .note-row-main p {
   color: var(--muted);
-  font-size: 0.9375rem;
-  line-height: 1.9;
+  font-size: 1rem;
+  line-height: 1.85;
   margin-top: 7px;
 }
 .note-row-end {
@@ -402,8 +397,8 @@ button {
   min-width: 0;
 }
 .about-content h2 {
-  font: 500 2.5rem/1.5 var(--serif);
-  letter-spacing: 0.07em;
+  font: 500 2.25rem/1.55 var(--serif);
+  letter-spacing: 0.04em;
 }
 .about-domain {
   color: var(--muted);
@@ -450,7 +445,7 @@ button {
   color: var(--red);
 }
 .article-header {
-  max-width: 750px;
+  max-width: 720px;
   margin-left: 296px;
   padding-block: 16px 42px;
 }
@@ -460,16 +455,16 @@ button {
   letter-spacing: 0.03em;
 }
 .article-header h1 {
-  font: 500 clamp(2.25rem, 3.8vw, 3rem)/1.5 var(--serif);
-  letter-spacing: 0.025em;
+  font: 500 clamp(2.125rem, 3.5vw, 2.75rem)/1.55 var(--serif);
+  letter-spacing: 0.01em;
   margin-top: 19px;
   text-wrap: balance;
 }
 .article-deck {
   font-size: 1.0625rem;
   color: var(--subtle);
-  line-height: 1.95;
-  max-width: 37em;
+  line-height: 1.9;
+  max-width: 36em;
   margin-top: 21px;
 }
 .article-header .entry-metadata {
@@ -530,23 +525,25 @@ button {
 }
 .article-column {
   min-width: 0;
-  max-width: 688px;
+  max-width: 40rem;
 }
 .prose {
   font-family: var(--serif);
   font-size: 1.1875rem;
-  line-height: 2.1;
+  font-weight: 400;
+  line-height: 2;
+  line-break: strict;
   overflow-wrap: anywhere;
 }
 .prose > :first-child {
   margin-top: 0;
 }
 .prose p {
-  margin-block: 0 1.4em;
+  margin-block: 0 1.35em;
 }
 .prose h2 {
-  font: 600 1.5625rem/1.65 var(--serif);
-  margin-block: 2.1em 0.9em;
+  font: 600 1.5rem/1.7 var(--serif);
+  margin-block: 2.2em 0.9em;
   scroll-margin-top: 40px;
 }
 .prose h3 {
@@ -574,7 +571,7 @@ button {
   padding: 1px 0 1px 24px;
   border-left: 2px solid var(--red);
   color: var(--subtle);
-  font-size: 1.25rem;
+  font-size: 1.1875rem;
   line-height: 1.95;
 }
 .prose blockquote > p {
@@ -599,7 +596,7 @@ button {
 .prose pre code {
   padding: 0;
   background: transparent;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 .prose ul,
 .prose ol {
@@ -709,7 +706,7 @@ button {
     gap: 32px;
   }
   .masthead h1 {
-    font-size: 3.9rem;
+    font-size: 3.625rem;
   }
   .journal-grid {
     grid-template-columns: 174px minmax(0, 1fr);
@@ -774,11 +771,7 @@ button {
   }
   .site-header nav {
     gap: 22px;
-    font-size: 0.875rem;
-  }
-  .site-header .header-external,
-  .nav-separator {
-    display: none;
+    font-size: 0.9375rem;
   }
   .masthead {
     grid-template-columns: 1fr;
@@ -788,7 +781,7 @@ button {
   }
   .masthead h1 {
     font-size: clamp(2.65rem, 9vw, 4.5rem);
-    letter-spacing: 0.065em;
+    letter-spacing: 0.045em;
   }
   .masthead-art {
     display: none;
@@ -815,7 +808,7 @@ button {
     padding-block: 19px 26px;
   }
   .featured-note h3 {
-    font-size: 1.8rem;
+    font-size: 1.625rem;
     margin-top: 19px;
     line-height: 1.55;
   }
@@ -840,13 +833,14 @@ button {
   }
   .note-row h3 {
     font-size: 1.25rem;
+    line-height: 1.7;
   }
   .note-link {
     gap: 16px;
     padding-block: 24px;
   }
   .note-row-main p {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
   .note-row-end {
     min-width: 36px;
@@ -862,7 +856,7 @@ button {
     padding-block: 12px 29px;
   }
   .article-header h1 {
-    font-size: 2.05rem;
+    font-size: 1.875rem;
     line-height: 1.55;
     margin-top: 17px;
   }

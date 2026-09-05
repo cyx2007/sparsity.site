@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { site } from '@/lib/site';
+import '@fontsource-variable/noto-serif-sc/wght.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
 import './globals.css';
 
 export const metadata: Metadata = {
